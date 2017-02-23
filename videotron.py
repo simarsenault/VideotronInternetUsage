@@ -21,14 +21,16 @@ class Videotron:
         post_values['codeUtil'] = self.config['username']
         post_values['motDePasse'] = self.config['password']
 
-        result_login_page = session.post("https://www.videotron.com/client/user-management/residentiel/secur/Login.do", data=post_values)
-
         # TODO check if login was successful
-
+        result_login_page = session.post("https://www.videotron.com/client/user-management/residentiel/secur/Login.do", data=post_values)
         internet_bandwidth_page = session.get("https://www.videotron.com/client/residentiel/secur/ConsommationInternet.do?locale=en")
 
+        # TODO get unit (GB vs MB)
         current_monthly_usage, maximum_monthly_usage = re.findall(self.PATTERN_MONTHLY_INTERNET_USAGE, internet_bandwidth_page.text)[0]
         days_remaining = re.findall(self.PATTERN_DAYS_IN_MONTH_REMAINING, internet_bandwidth_page.text)[0]
+
+        session.get("https://www.videotron.com/client/user-management/residentiel/secur/Logout.do?dispatch=logout")
+        session.close()
 
         return {
             'usage': current_monthly_usage,
