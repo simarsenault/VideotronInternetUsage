@@ -12,6 +12,27 @@ class Videotron:
 
     def get_current_month_usage(self):
         session = requests.session()
+
+        if not (self._login(session)):
+            raise RuntimeError('Login failed!')
+
+        bandwidth_page = session.get("https://www.videotron.com/client/residentiel/secur/ConsommationInternet.do?locale=en")
+
+        unit = self._get_unit(bandwidth_page)
+        current_monthly_usage, maximum_monthly_usage = self._get_bandwidth_usage(bandwidth_page)
+        days_remaining = self._get_days_remaining(bandwidth_page)
+
+        self._logout(session)
+        session.close()
+
+        return {
+            'usage': current_monthly_usage,
+            'maximum': maximum_monthly_usage,
+            'unit': unit,
+            'days_remaining': days_remaining
+        }
+
+    def _login(self, session):
         login_page = session.get("https://www.videotron.com/client/residentiel/Espace-client")
 
         post_values = {}
@@ -21,19 +42,18 @@ class Videotron:
         post_values['codeUtil'] = self.config['username']
         post_values['motDePasse'] = self.config['password']
 
-        # TODO check if login was successful
-        result_login_page = session.post("https://www.videotron.com/client/user-management/residentiel/secur/Login.do", data=post_values)
-        internet_bandwidth_page = session.get("https://www.videotron.com/client/residentiel/secur/ConsommationInternet.do?locale=en")
+        result_login_page = session.post("https://www.videotron.com/client/user-management/residentiel/secur/Login.do", data = post_values)
 
-        # TODO get unit (GB vs MB)
-        current_monthly_usage, maximum_monthly_usage = re.findall(self.PATTERN_MONTHLY_INTERNET_USAGE, internet_bandwidth_page.text)[0]
-        days_remaining = re.findall(self.PATTERN_DAYS_IN_MONTH_REMAINING, internet_bandwidth_page.text)[0]
+        return True  # TODO check if login was successful
 
-        session.get("https://www.videotron.com/client/user-management/residentiel/secur/Logout.do?dispatch=logout")
-        session.close()
+    def _get_unit(self, bandwidth_page):
+        return 'GB'  # TODO
 
-        return {
-            'usage': current_monthly_usage,
-            'maximum': maximum_monthly_usage,
-            'days_remaining': days_remaining
-        }
+    def _get_bandwidth_usage(self, bandwidth_page):
+        return re.findall(self.PATTERN_MONTHLY_INTERNET_USAGE, bandwidth_page.text)[0]  # TODO handle possible errors
+
+    def _get_days_remaining(self, bandwidth_page):
+        return re.findall(self.PATTERN_DAYS_IN_MONTH_REMAINING, bandwidth_page.text)[0]  # TODO handle possible errors
+
+    def _logout(self, session):
+        session.get("https://www.videotron.com/client/user-management/residentiel/secur/Logout.do?dispatch=logout")  # TODO check if logout was successful
