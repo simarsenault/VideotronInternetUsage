@@ -2,5 +2,19 @@
   "videotron_account": {
     "username": "my-username",
     "password": "my-password"
+  },
+  "smtp": {
+    "server": "mysmtp.myserver.com",
+    "port": 12345,
+    "username": "my-username",
+    "password": "my-password"
+  },
+  "email": {
+    "from": {
+      "name": "John Smith",
+      "address": "john@smith.com"
+    },
+    "to": ["john@smith.com"],
+    "subject": "Videotron Monthly Bandwidth Usage"
   }
 }
