@@ -10,11 +10,23 @@
     "password": "my-password"
   },
   "email": {
+    "enabled": false,
     "from": {
       "name": "John Smith",
       "address": "john@smith.com"
     },
     "to": ["john@smith.com"],
     "subject": "Videotron Monthly Bandwidth Usage"
+  },
+  "twilio_sms": {
+    "enabled": true,
+    "account": {
+      "sid": "",
+      "auth_token": ""
+    },
+    "sms": {
+      "from_number": "+15555555555",
+      "to_numbers": ["+15555555555"]
+    }
   }
 }
