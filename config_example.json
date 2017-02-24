@@ -3,14 +3,14 @@
     "username": "my-username",
     "password": "my-password"
   },
-  "smtp": {
-    "server": "mysmtp.myserver.com",
-    "port": 12345,
-    "username": "my-username",
-    "password": "my-password"
-  },
   "email": {
     "enabled": false,
+    "smtp": {
+      "server": "mysmtp.myserver.com",
+      "port": 12345,
+      "username": "my-username",
+      "password": "my-password"
+    },
     "from": {
       "name": "John Smith",
       "address": "john@smith.com"

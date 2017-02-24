@@ -17,7 +17,7 @@ if __name__ == '__main__':
     message = 'Usage: {usage} {unit}\nMaximum: {maximum} {unit}\nDay(s) remaining: {days_remaining}'.format(**current_month_usage)
 
     if config_email['enabled']:
-        mailer = Email_Sender(config['smtp'])
+        mailer = Email_Sender(config_email['smtp'])
         mailer.send(config_email, message)
 
     if config_twilio_sms['enabled']:
