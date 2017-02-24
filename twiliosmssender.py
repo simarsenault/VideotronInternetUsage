@@ -1,7 +1,7 @@
 from twilio.rest import TwilioRestClient
 
 
-class Twilio_SMS_Sender:
+class TwilioSmsSender:
     def __init__(self, account_sid, auth_token):
         self.client = TwilioRestClient(account_sid, auth_token)
 

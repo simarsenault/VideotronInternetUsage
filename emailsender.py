@@ -2,7 +2,7 @@ import smtplib
 from email.mime.text import MIMEText
 
 
-class Email_Sender:
+class EmailSender:
     def __init__(self, config):
         self.config = config
 
