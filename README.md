@@ -1,9 +1,6 @@
 # VideotronInternetUsage
 
 This is my first Python project ever. I made it to send me daily alert about my monthly bandwidth usage.
- 
-## Requirements
-* `requests` 2.13.0
 
 ## Setup
 1. Clone the repository
