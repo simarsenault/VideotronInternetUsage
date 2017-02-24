@@ -21,6 +21,6 @@ if __name__ == '__main__':
         email_sender.send(config_email, message)
 
     if config_twilio_sms['enabled']:
-        sms_sender = TwilioSmsSender(config_twilio_sms['account']['sid'], config_twilio_sms['account']['auth_token'])
+        sms_sender = TwilioSmsSender(config_twilio_sms['account']['sid'], config_twilio_sms['account']['auth_token'], config_twilio_sms['sms']["from_number"])
         for number in config_twilio_sms['sms']["to_numbers"]:
-            sms_sender.send_sms(config_twilio_sms['sms']["from_number"], number, message)
+            sms_sender.send_sms(number, message)
