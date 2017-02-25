@@ -3,6 +3,10 @@
     "username": "my-username",
     "password": "my-password"
   },
+  "logger": {
+    "enabled": true,
+    "path": "data.json"
+  },
   "email": {
     "enabled": false,
     "smtp": {

@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 from videotron import Videotron
 from emailsender import EmailSender
 from twiliosmssender import TwilioSmsSender
@@ -10,9 +11,25 @@ if __name__ == '__main__':
 
     config_email = config['email']
     config_twilio_sms = config['twilio_sms']
+    config_logger = config['logger']
 
     videotron = Videotron(config['videotron_account'])
     current_month_usage = videotron.get_current_month_usage()
+
+    if config_logger['enabled']:
+        data_file_path = Path(config_logger['path'])
+        data = {'logs': []}
+        if not data_file_path.is_file():
+            with open(config_logger['path'], 'w') as data_file:
+                data_file.write('{"logs": []}')
+
+        with open(config_logger['path'], 'r') as data_file:
+            data = json.load(data_file)
+
+        data['logs'].append(current_month_usage)
+
+        with open(config_logger['path'], 'w') as data_file:
+            json.dump(data, data_file)
 
     message = 'Usage: {usage} {unit}\nMaximum: {maximum} {unit}\nDay(s) remaining: {days_remaining}'.format(**current_month_usage)
 
