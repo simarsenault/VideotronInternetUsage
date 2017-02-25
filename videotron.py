@@ -1,11 +1,13 @@
 import requests
 import re
+import datetime
 
 
 class Videotron:
     PATTERN_INPUT_HIDDEN = re.compile(r"<input type=\"hidden\" name=\"(?P<tokenName>\w+)\" value=\"(?P<tokenValue>[\w.]+)\">")
-    PATTERN_MONTHLY_INTERNET_USAGE = re.compile(r"<span class=\"quantities\">(?P<current>[\d.]+) / (?P<maximum>[\d.]+).*</span>")
+    PATTERN_MONTHLY_INTERNET_USAGE = re.compile(r"<span class=\"quantities\">(?P<current>[\d.]+) / (?P<maximum>[\d.]+).*(?P<unit>GB|MB)</span>")
     PATTERN_DAYS_IN_MONTH_REMAINING = re.compile(r"<p class=\"note_reset\">Number of days before reverting to zero: (?P<daysLeft>\d+) days?</p>")
+    PATTERN_LAST_UPDATE = re.compile(r"<p class=\"details_mise_a_jour\">(?P<last_update>Last updated \w+ (?P<last_update_date>\w+ \d+, \d+) at (?P<last_update_time>\d+:\d+ \w+))</p>")
 
     def __init__(self, config):
         self.config = config
@@ -18,14 +20,15 @@ class Videotron:
 
         bandwidth_page = session.get("https://www.videotron.com/client/residentiel/secur/ConsommationInternet.do?locale=en")
 
-        unit = self._get_unit(bandwidth_page)
-        current_monthly_usage, maximum_monthly_usage = self._get_bandwidth_usage(bandwidth_page)
+        update_date = self._get_update_date(bandwidth_page)
+        current_monthly_usage, maximum_monthly_usage, unit = self._get_bandwidth_usage(bandwidth_page)
         days_remaining = self._get_days_remaining(bandwidth_page)
 
         self._logout(session)
         session.close()
 
         return {
+            'update_date': update_date,
             'usage': current_monthly_usage,
             'maximum': maximum_monthly_usage,
             'unit': unit,
@@ -46,8 +49,10 @@ class Videotron:
 
         return True  # TODO check if login was successful
 
-    def _get_unit(self, bandwidth_page):
-        return 'GB'  # TODO
+    def _get_update_date(self, bandwidth_page):
+        last_update, last_update_date, last_update_time = re.findall(self.PATTERN_LAST_UPDATE, bandwidth_page.text)[0]
+
+        return datetime.datetime.strptime(last_update_date + " " + last_update_time, '%B %d, %Y %I:%M %p').strftime('%Y-%m-%d %H:%M')
 
     def _get_bandwidth_usage(self, bandwidth_page):
         return re.findall(self.PATTERN_MONTHLY_INTERNET_USAGE, bandwidth_page.text)[0]  # TODO handle possible errors

@@ -31,7 +31,9 @@ if __name__ == '__main__':
         with open(config_logger['path'], 'w') as data_file:
             json.dump(data, data_file)
 
-    message = 'Usage: {usage} {unit}\nMaximum: {maximum} {unit}\nDay(s) remaining: {days_remaining}'.format(**current_month_usage)
+    message = 'Last update: {update_date}\n' \
+              'Usage: {usage} / {maximum} {unit}\n' \
+              'Day(s) remaining: {days_remaining}'.format(**current_month_usage)
 
     if config_email['enabled']:
         email_sender = EmailSender(config_email['smtp'])
