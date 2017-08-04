@@ -1,7 +1,6 @@
 {
   "videotron_account": {
-    "username": "my-username",
-    "password": "my-password"
+    "userkey": "mykey"
   },
   "logger": {
     "enabled": true,
