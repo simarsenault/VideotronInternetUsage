@@ -13,8 +13,8 @@ class Videotron:
         usage = json.loads(session.get("https://www.videotron.com/api/1.0/internet/usage/wired/"+self.config["userkey"]+".json?lang=en&caller=videotron-mac.pommepause.com").content)
 
         update_date = parser.parse(usage["internetAccounts"][0]["usageTimestamp"]).strftime('%Y-%m-%d %H:%M')
-        current_monthly_usage = "{0:.5g}".format(self._convert_bytes_to_gigabytes(usage["internetAccounts"][0]["downloadedBytes"] + usage["internetAccounts"][0]["uploadedBytes"]))
-        maximum_monthly_usage = self._convert_bytes_to_gigabytes(usage["internetAccounts"][0]["maxCombinedBytes"])
+        current_monthly_usage = format(self._convert_bytes_to_gigabytes(usage["internetAccounts"][0]["downloadedBytes"] + usage["internetAccounts"][0]["uploadedBytes"]), '.2f')
+        maximum_monthly_usage = format(self._convert_bytes_to_gigabytes(usage["internetAccounts"][0]["maxCombinedBytes"]), '.0f')
         unit = 'GB'
         days_remaining = usage["daysToEnd"]
 
@@ -29,4 +29,4 @@ class Videotron:
         }
 
     def _convert_bytes_to_gigabytes(self, _bytes):
-        return _bytes / 1073741824
+        return _bytes / 1073741824.0
