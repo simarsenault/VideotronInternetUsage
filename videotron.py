@@ -1,6 +1,6 @@
 import requests
 import json
-import datetime
+from dateutil import parser
 
 
 class Videotron:
@@ -12,7 +12,7 @@ class Videotron:
 
         usage = json.loads(session.get("https://www.videotron.com/api/1.0/internet/usage/wired/"+self.config["userkey"]+".json?lang=en&caller=videotron-mac.pommepause.com").content)
 
-        update_date = datetime.datetime.strptime(usage["internetAccounts"][0]["usageTimestamp"], '%Y-%m-%dT%H:%M%z').strftime('%Y-%m-%d %H:%M')
+        update_date = parser.parse(usage["internetAccounts"][0]["usageTimestamp"]).strftime('%Y-%m-%d %H:%M')
         current_monthly_usage = "{0:.5g}".format(self._convert_bytes_to_gigabytes(usage["internetAccounts"][0]["downloadedBytes"] + usage["internetAccounts"][0]["uploadedBytes"]))
         maximum_monthly_usage = self._convert_bytes_to_gigabytes(usage["internetAccounts"][0]["maxCombinedBytes"])
         unit = 'GB'

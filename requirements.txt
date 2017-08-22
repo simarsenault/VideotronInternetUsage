@@ -1,2 +1,4 @@
 requests==2.13.0
-twilio>=3.3.6
+twilio==5.7.0
+pathlib==1.0.1
+python-dateutil==2.6.1

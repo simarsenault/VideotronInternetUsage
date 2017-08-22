@@ -1,6 +1,12 @@
 # Real config file
 config.json
 
+# Log file
+data.json
+
+# Custom virutal environment
+VideotronInternetUsage/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
